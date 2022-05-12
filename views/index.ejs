@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Human Centered Design</title>
+        <title>Schema Larissa</title>
         <link rel="stylesheet" href="/css/stylesheet.css" />
     </head>
     <body>
-        <h1>Jo</h1>
+        <h1 tabindex="0">Schema Larissa</h1>
+        <form action="/kies-week" method="POST">
+                <label for="week">
+                    <span> Vul hier een weeknummer in. Het is nu week </span>
+                    <input type="number" name="week" id="week" min="1" max="53" placeholder="19" aria-invalid="false" required />
+                </label>
+            </div>
+            <input type="submit" value="Zoek rooster voor gekozen week" />
+        </form>
         <script src="/js/main.js"></script>
     </body>
 </html>

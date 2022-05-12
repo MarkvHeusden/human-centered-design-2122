@@ -1,60 +1,17 @@
-const socket = io('/')
-const myPeer = new Peer(undefined, {
-    secure: true,
-    host: '0.peerjs.com',
-    port: '443',
-})
-const roomId = window.location.pathname.replace(/\//, '')
-const mainEl = document.querySelector('main')
-const myVideo = document.createElement('video')
-myVideo.muted = true
-
-const peers = {}
-
-navigator.mediaDevices
-    .getUserMedia({
-        video: true,
-        audio: true,
-    })
-    .then((camera) => {
-        addVideoStream(myVideo, camera)
-
-        myPeer.on('call', (call) => {
-            call.answer(camera)
-            const video = document.createElement('video')
-            call.on('stream', (userVideoStream) => {
-                addVideoStream(video, userVideoStream)
-            })
-        })
-
-        socket.on('user-connected', (userId) => {
-            connectToNewUser(userId, camera)
-        })
-    })
-
-socket.on('user-disconnected', (userId) => {
-    if (peers[userId]) peers[userId].close()
-})
-
-myPeer.on('open', (userId) => {
-    socket.emit('join-room', roomId, userId)
-})
-
-function connectToNewUser(userId, camera) {
-    const call = myPeer.call(userId, camera)
-    const video = document.createElement('video')
-    call.on('stream', (userVideoStream) => {
-        addVideoStream(video, userVideoStream)
-    })
-    call.on('close', () => video.remove())
-
-    peers[userId] = call
-    console.log(peers)
+// Zorg dat er maar 2 cijfers in de input gevuld kunnen worden
+const input = document.querySelector('input[type="number"]')
+const submit = document.querySelector('input[type="submit"]')
+input.oninput = function () {
+    if (this.value.length > 2) {
+        this.value = this.value.slice(0, 2)
+    }
+    submit.value = `Zoek rooster voor week ${input.value}`
 }
 
-function addVideoStream(video, camera) {
-    video.srcObject = camera
-    video.setAttribute('playsinline', '')
-    video.addEventListener('loadedmetadata', () => video.play())
-    mainEl.append(video)
-}
+// Bereken het huidige weeknummer en geef deze als placeholder
+const currentDate = new Date()
+const startDate = new Date(currentDate.getFullYear(), 0, 1)
+const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000))
+const weekNumber = Math.floor((currentDate.getDay() + 1 + days) / 7)
+
+input.placeholder = weekNumber
